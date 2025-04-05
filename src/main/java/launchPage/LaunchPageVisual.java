@@ -52,13 +52,7 @@ public class LaunchPageVisual extends JFrame {
         btnUnlockVault.setBackground(new Color(0, 102, 204)); // Soft blue background color
         btnUnlockVault.setFocusPainted(false); // Remove focus highlight on button press
         // Center the button horizontally and position vertically below the password field
-        btnUnlockVault.setBounds(120, 120, 160, 30); 
-        btnUnlockVault.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                // Handle unlock vault action (this is just a placeholder for now)
-                JOptionPane.showMessageDialog(null, "Vault Unlocked");
-            }
-        });
+        btnUnlockVault.setBounds(110, 120, 160, 30); 
         add(btnUnlockVault);
 
         setVisible(true); // Show the frame
@@ -79,6 +73,10 @@ public class LaunchPageVisual extends JFrame {
     public String getPassword() {
         // Convert the char array to a String
         return new String(passwordField.getPassword());
+    }
+    
+    public void createMessage(String message) {
+    	JOptionPane.showMessageDialog(null, message);
     }
     
     public void createErrorMessage(String message) {

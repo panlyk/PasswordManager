@@ -14,7 +14,7 @@ public class LaunchPageController {
     private void initialize() throws Exception {
         // Check if the master key exists and update the view accordingly
         if (utils.masterKeyExists()) {
-            visual.updateUnlockButton("Unlock Vault", 120, 120, 160, 30);
+            visual.updateUnlockButton("Unlock Vault", 110, 120, 160, 30);
         } else {
         	visual.updateUnlockButton("Create Master Key", 90, 120, 200, 30);
         }
@@ -32,7 +32,16 @@ public class LaunchPageController {
     
     private void handleUnlockVaultAction() throws Exception {
     	if (utils.masterKeyExists()) {
-    		utils.unlockAction();
+    		//attempt login with password input
+    		Boolean correctPassword = utils.attemptLogin(visual.getPassword());
+    		
+    		if(correctPassword) {
+    			visual.createMessage("Correct Password!");
+    		}
+    		else {
+				visual.createErrorMessage("Incorrect Password!");
+			}
+    		
     	}
     	else {
     		String pw = visual.getPassword();
@@ -44,4 +53,8 @@ public class LaunchPageController {
     		
     	}
     }
+    
+
+    
+    
 }

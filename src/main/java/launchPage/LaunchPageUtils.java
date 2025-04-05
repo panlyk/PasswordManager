@@ -5,6 +5,7 @@ import java.util.Base64;
 
 import javax.crypto.SecretKey;
 import database.DbManager;
+import session.Session;
 import utils.CryptoUtils;
 
 public class LaunchPageUtils {
@@ -14,7 +15,7 @@ public class LaunchPageUtils {
 	
 	//Checks if the master key has been created
 	public boolean masterKeyExists() throws SQLException {
-		String masterKey = db.getHashedMasterKey();
+		String masterKey = db.getHashedMasterPassword();
 		if(masterKey!=null) {
 			return true;
 		} 
@@ -25,16 +26,35 @@ public class LaunchPageUtils {
 	}
 	
     public void unlockAction () {
-    	
     }
     
     public void createMasterKeyAction(String pw) throws Exception {
     	char[] pwList = pw.toCharArray();
-    	SecretKey masterKeyUnencrypted = crypto.deriveKey(pwList);
-    	byte[] keyBytes = masterKeyUnencrypted.getEncoded();
-    	db.setHashedMasterKey(crypto.getHashString(pw));
+    	SecretKey masterKey = crypto.deriveKey(pwList);
+    	byte[] keyBytes = masterKey.getEncoded();
+    	db.setHashedMasterPassword(crypto.getHashString(pw));
+    	Session session = Session.getInstance();
+    	session.setMasterKey(masterKey);
     }
     
-    
+    public boolean attemptLogin (String pw) {
+    	//turn input into hash
+    	String inputPasswordHash = crypto.getHashString(pw);
+    	
+    	//get the master password hash
+    	String masterPasswordHash = null;
+    	try {
+    		masterPasswordHash = db.getHashedMasterPassword();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	if (inputPasswordHash.equals(masterPasswordHash)) {
+    		return true;
+    	} else {
+			return false;
+		}
+    }
 
 }

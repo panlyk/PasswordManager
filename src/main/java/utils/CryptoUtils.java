@@ -108,4 +108,14 @@ public class CryptoUtils {
 	        return false;
 	    }
 	}
+	
+	public boolean compareHashesOfStrings(String pw1, String pw2) {
+		String hash1 = getHashString(pw1);
+		String hash2 = getHashString(pw2);
+		if(hash1.equals(hash2)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
