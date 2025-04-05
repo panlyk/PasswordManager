@@ -81,9 +81,41 @@ public class CryptoUtils {
 		return salt;
 	}
 	
-	public static String hashSecretKey(SecretKey key) throws NoSuchAlgorithmException {
-	    MessageDigest digest = MessageDigest.getInstance("SHA-256");
-	    byte[] hashBytes = digest.digest(key.getEncoded());
-	    return Base64.getEncoder().encodeToString(hashBytes);
+	//returns a hashed string from a password string
+	public String getHashString (String pw) {
+		//check if input is valid
+		if (!isValidBase64(pw)) {
+		    throw new IllegalArgumentException("Invalid Base64 input");
+		}
+		byte[] pwBytes = Base64.getDecoder().decode(pw);
+		byte[] pwBytesHash = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			pwBytesHash = digest.digest(pwBytes);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Base64.getEncoder().encodeToString(pwBytesHash);		
+	}
+	
+	//checks if the input can be decoded by base64
+	private boolean isValidBase64(String base64) {
+	    try {
+	        Base64.getDecoder().decode(base64);
+	        return true;
+	    } catch (IllegalArgumentException e) {
+	        return false;
+	    }
+	}
+	
+	public boolean compareHashesOfStrings(String pw1, String pw2) {
+		String hash1 = getHashString(pw1);
+		String hash2 = getHashString(pw2);
+		if(hash1.equals(hash2)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

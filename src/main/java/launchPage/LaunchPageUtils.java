@@ -1,11 +1,11 @@
 package launchPage;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.util.Base64;
 
 import javax.crypto.SecretKey;
 import database.DbManager;
+import session.Session;
 import utils.CryptoUtils;
 
 public class LaunchPageUtils {
@@ -15,7 +15,7 @@ public class LaunchPageUtils {
 	
 	//Checks if the master key has been created
 	public boolean masterKeyExists() throws SQLException {
-		String masterKey = db.getEncryptedMasterKey();
+		String masterKey = db.getHashedMasterPassword();
 		if(masterKey!=null) {
 			return true;
 		} 
@@ -26,28 +26,35 @@ public class LaunchPageUtils {
 	}
 	
     public void unlockAction () {
-    	
     }
     
     public void createMasterKeyAction(String pw) throws Exception {
     	char[] pwList = pw.toCharArray();
-    	SecretKey masterKeyUnencrypted = crypto.deriveKey(pwList);
-    	String hashedMasterKey = CryptoUtils.hashSecretKey(masterKeyUnencrypted);    	
-    	db.setEncryptedMasterKey(hashedMasterKey);
+    	SecretKey masterKey = crypto.deriveKey(pwList);
+    	byte[] keyBytes = masterKey.getEncoded();
+    	db.setHashedMasterPassword(crypto.getHashString(pw));
+    	Session session = Session.getInstance();
+    	session.setMasterKey(masterKey);
     }
     
-    public boolean loginPasswordIsCorrect(String pw) throws Exception {
-    	char[] pwList = pw.toCharArray();
-    	SecretKey keyInput = crypto.deriveKey(pwList);
-    	String hashedLoginPassword = CryptoUtils.hashSecretKey(keyInput); 
-    	String hashedMasterKey = db.getEncryptedMasterKey();
-    	if(hashedLoginPassword.equals(hashedMasterKey)) {
-    		return true;
-    	} 
-    	return false;
+    public boolean attemptLogin (String pw) {
+    	//turn input into hash
+    	String inputPasswordHash = crypto.getHashString(pw);
     	
+    	//get the master password hash
+    	String masterPasswordHash = null;
+    	try {
+    		masterPasswordHash = db.getHashedMasterPassword();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	if (inputPasswordHash.equals(masterPasswordHash)) {
+    		return true;
+    	} else {
+			return false;
+		}
     }
-    
-    
 
 }
