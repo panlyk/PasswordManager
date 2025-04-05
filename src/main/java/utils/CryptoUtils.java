@@ -1,5 +1,6 @@
 package utils;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -78,5 +79,33 @@ public class CryptoUtils {
 			dbManger.setSalt(Base64.getEncoder().encodeToString(salt));
 		}
 		return salt;
+	}
+	
+	//returns a hashed string from a password string
+	public String getHashString (String pw) {
+		//check if input is valid
+		if (!isValidBase64(pw)) {
+		    throw new IllegalArgumentException("Invalid Base64 input");
+		}
+		byte[] pwBytes = Base64.getDecoder().decode(pw);
+		byte[] pwBytesHash = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			pwBytesHash = digest.digest(pwBytes);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Base64.getEncoder().encodeToString(pwBytesHash);		
+	}
+	
+	//checks if the input can be decoded by base64
+	private boolean isValidBase64(String base64) {
+	    try {
+	        Base64.getDecoder().decode(base64);
+	        return true;
+	    } catch (IllegalArgumentException e) {
+	        return false;
+	    }
 	}
 }

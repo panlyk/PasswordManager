@@ -1,4 +1,5 @@
 package launchPage;
+import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.util.Base64;
 
@@ -13,7 +14,7 @@ public class LaunchPageUtils {
 	
 	//Checks if the master key has been created
 	public boolean masterKeyExists() throws SQLException {
-		String masterKey = db.getEncryptedMasterKey();
+		String masterKey = db.getHashedMasterKey();
 		if(masterKey!=null) {
 			return true;
 		} 
@@ -31,9 +32,9 @@ public class LaunchPageUtils {
     	char[] pwList = pw.toCharArray();
     	SecretKey masterKeyUnencrypted = crypto.deriveKey(pwList);
     	byte[] keyBytes = masterKeyUnencrypted.getEncoded();
-    	String masterKeyUnencryptedString = Base64.getEncoder().encodeToString(keyBytes);
-    	String masterKeyEncrypted = CryptoUtils.encrypt(masterKeyUnencryptedString, masterKeyUnencrypted);
-    	db.setEncryptedMasterKey(masterKeyEncrypted);
+    	db.setHashedMasterKey(crypto.getHashString(pw));
     }
+    
+    
 
 }

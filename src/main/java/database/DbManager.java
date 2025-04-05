@@ -53,7 +53,7 @@ public class DbManager {
     }
     
     // Get the encrypted master key
-    public String getEncryptedMasterKey() throws SQLException {
+    public String getHashedMasterKey() throws SQLException {
         String masterKey = null;
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + path);
              Statement stmt = conn.createStatement()) {
@@ -67,8 +67,8 @@ public class DbManager {
     }
     
     // Set the encrypted master key if it doesn't exist
-    public void setEncryptedMasterKey(String key) throws SQLException {
-        if (getEncryptedMasterKey() != null) {
+    public void setHashedMasterKey(String key) throws SQLException {
+        if (getHashedMasterKey() != null) {
             throw new SQLException("Master Key already exists");
         }
         

@@ -34,7 +34,7 @@ public class LaunchPageVisual extends JFrame {
         lblPassword.setFont(new Font("Arial", Font.PLAIN, 14));
         lblPassword.setForeground(new Color(50, 50, 50)); // Dark text color
         // Center the password label horizontally and position vertically with padding
-        lblPassword.setBounds(80, 90, 80, 25); 
+        lblPassword.setBounds(80, 80, 80, 25); 
         add(lblPassword);
 
         // Password field (password input with asterisks)
@@ -42,7 +42,7 @@ public class LaunchPageVisual extends JFrame {
         passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
         passwordField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1)); // Soft border
         // Center the password field horizontally with the label and position vertically with padding
-        passwordField.setBounds(170, 90, 120, 25); 
+        passwordField.setBounds(170, 80, 120, 25); 
         add(passwordField);
 
         // Unlock Vault button
@@ -52,7 +52,7 @@ public class LaunchPageVisual extends JFrame {
         btnUnlockVault.setBackground(new Color(0, 102, 204)); // Soft blue background color
         btnUnlockVault.setFocusPainted(false); // Remove focus highlight on button press
         // Center the button horizontally and position vertically below the password field
-        btnUnlockVault.setBounds(110, 150, 160, 30); 
+        btnUnlockVault.setBounds(120, 120, 160, 30); 
         btnUnlockVault.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 // Handle unlock vault action (this is just a placeholder for now)
