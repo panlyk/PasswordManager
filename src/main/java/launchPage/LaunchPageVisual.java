@@ -97,6 +97,10 @@ public class LaunchPageVisual extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
     
+    public void closePage() {
+    	this.dispose();
+    }
+    
 
     
 }

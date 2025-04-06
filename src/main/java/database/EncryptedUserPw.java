@@ -10,5 +10,17 @@ public class EncryptedUserPw {
 		this.password = pw;
 		this.domain = dom;
 	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public String getDomain() {
+		return domain;
+	}
  
 }

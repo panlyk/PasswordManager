@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import passwordLibrary.PasswordLibraryVisual;
+
 public class LaunchPageController {
 	private LaunchPageVisual visual;
 	private LaunchPageUtils utils;
@@ -61,6 +63,8 @@ public class LaunchPageController {
     		
     		if(correctPassword) {
     			visual.createMessage("Correct Password!");
+    			visual.closePage();
+    			PasswordLibraryVisual libraryPage = new PasswordLibraryVisual();
     		}
     		else {
 				visual.createErrorMessage("Incorrect Password!");
@@ -71,6 +75,8 @@ public class LaunchPageController {
     		String pw = visual.getPassword();
     		if (pw.length()>5) {
     			utils.createMasterKeyAction(pw);
+    			visual.closePage();
+    			PasswordLibraryVisual libraryPage = new PasswordLibraryVisual();
     		} else {
     			visual.createErrorMessage("Password should be longer than 5 digits");
     		}

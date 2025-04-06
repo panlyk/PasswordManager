@@ -1,15 +1,22 @@
 package database;
 
 import java.sql.*;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.SecretKey;
+
+import session.Session;
+import utils.CryptoUtils;
 
 public class DbManager {
     String path = "src/main/resources/database.db";
     
     // Fetch all encrypted user passwords
-    public List<EncryptedUserPw> getAllEncryptedUserPw() throws SQLException {
+    public List<EncryptedUserPw> getAllUnencryptedUserPw() throws Exception {
         List<EncryptedUserPw> allData = new ArrayList<>();
+        SecretKey masterkey = Session.getInstance().getMasterKey();
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + path);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT username, password, domain FROM user_passwords")) {
@@ -18,13 +25,15 @@ public class DbManager {
                 String name = rs.getString("username");
                 String pw = rs.getString("password");
                 String dom = rs.getString("domain");
-                EncryptedUserPw userPw = new EncryptedUserPw(name, pw, dom);
+                String unencrypted = CryptoUtils.decrypt(pw, masterkey);
+                EncryptedUserPw userPw = new EncryptedUserPw(name, unencrypted, dom);
                 allData.add(userPw);
             }
         } catch (SQLException e) {
             System.err.println("Error accessing the database: " + e.getMessage());
             throw e; 
         }
+
         return allData;
     }
     
@@ -124,6 +133,29 @@ public class DbManager {
         }
     }
     
+    public void add(String domain, String username, String password) throws Exception {
+		SecretKey masterKey = Session.getInstance().getMasterKey();
+		String encryptedPassword = CryptoUtils.encrypt(password, masterKey);
+		String querry = "INSERT INTO user_passwords (domain, username, password) VALUES (?,?,?)";
+		try(Connection conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+				PreparedStatement stmt = conn.prepareStatement(querry)){
+			stmt.setString(1, domain);
+			stmt.setString(2, username);
+			stmt.setString(3, encryptedPassword);
+			stmt.executeUpdate();
+		}
+	}
+    
+    public void remove(String domain, String username) throws Exception{
+    	String sql = "DELETE FROM user_passwords WHERE domain=? AND username=?";
+    	try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+    			PreparedStatement stmt = connection.prepareStatement(sql);){
+    		stmt.setString(1, domain);
+    		stmt.setString(2, username);
+    		stmt.executeUpdate();    		
+    	}
+    }
+    
     public void wipeDB () {
     	try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + path);
     			Statement stmt = connection.createStatement()){
@@ -138,4 +170,6 @@ public class DbManager {
 			e.printStackTrace();
 		}
     }
+    
+    
 }

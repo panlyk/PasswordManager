@@ -1,5 +1,7 @@
 package launchPage;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import java.util.Base64;
 
@@ -37,7 +39,7 @@ public class LaunchPageUtils {
     	session.setMasterKey(masterKey);
     }
     
-    public boolean attemptLogin (String pw) {
+    public boolean attemptLogin (String pw) throws NoSuchAlgorithmException, InvalidKeySpecException, SQLException {
     	//turn input into hash
     	String inputPasswordHash = crypto.getHashString(pw);
     	
@@ -51,6 +53,8 @@ public class LaunchPageUtils {
 		}
     	
     	if (inputPasswordHash.equals(masterPasswordHash)) {
+    		char[] pwChars = pw.toCharArray();
+    		Session.getInstance().setMasterKey(crypto.deriveKey(pwChars));
     		return true;
     	} else {
 			return false;
