@@ -123,4 +123,19 @@ public class DbManager {
             throw e;
         }
     }
+    
+    public void wipeDB () {
+    	try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+    			Statement stmt = connection.createStatement()){
+    		connection.setAutoCommit(false);
+    		stmt.execute("DELETE FROM master");
+    		stmt.execute("DELETE FROM salt");
+    		stmt.execute("DELETE FROM user_passwords");
+    		connection.commit();
+    		
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

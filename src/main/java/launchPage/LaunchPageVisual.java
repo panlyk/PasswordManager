@@ -11,6 +11,7 @@ public class LaunchPageVisual extends JFrame {
     private JTextField textFieldUsername;
     private JPasswordField passwordField;
     private JButton btnUnlockVault;  // Declare btnUnlockVault as an instance variable
+    private JButton resetButton;
 
     public LaunchPageVisual() throws Exception {
         // Set window properties
@@ -54,6 +55,15 @@ public class LaunchPageVisual extends JFrame {
         // Center the button horizontally and position vertically below the password field
         btnUnlockVault.setBounds(110, 120, 160, 30); 
         add(btnUnlockVault);
+        
+        resetButton = new JButton("Reset Vault");  // Initialize the button
+        resetButton.setFont(new Font("Arial", Font.BOLD, 16));
+        resetButton.setForeground(Color.WHITE);
+        resetButton.setBackground(new Color(0, 102, 204)); // Soft blue background color
+        resetButton.setFocusPainted(false); // Remove focus highlight on button press
+        // Center the button horizontally and position vertically below the password field
+        resetButton.setBounds(110, 160, 160, 30); 
+        add(resetButton);
 
         setVisible(true); // Show the frame
         LaunchPageController controller = new LaunchPageController(this);
@@ -70,6 +80,10 @@ public class LaunchPageVisual extends JFrame {
     	btnUnlockVault.addActionListener(listener);
     }
     
+    public void addResetDbButtonListener(ActionListener listener) {
+    	resetButton.addActionListener(listener);
+    }
+    
     public String getPassword() {
         // Convert the char array to a String
         return new String(passwordField.getPassword());
@@ -82,5 +96,7 @@ public class LaunchPageVisual extends JFrame {
     public void createErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
+
     
 }

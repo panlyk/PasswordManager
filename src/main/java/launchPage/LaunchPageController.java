@@ -1,5 +1,10 @@
 package launchPage;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JOptionPane;
+
 public class LaunchPageController {
 	private LaunchPageVisual visual;
 	private LaunchPageUtils utils;
@@ -28,6 +33,25 @@ public class LaunchPageController {
 				e1.printStackTrace();
 			}
 		});
+        
+        //setup the Reset Button
+        visual.addResetDbButtonListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int choice = JOptionPane.showConfirmDialog(null, "This will reset ALL PASSWORDS. This action cannot be undone",
+						"Confirm Reset",
+						JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+				
+				if(choice == JOptionPane.YES_OPTION) {
+					utils.ResetDB();
+					visual.createMessage("Vault has been reset!");
+		        	visual.updateUnlockButton("Create Master Key", 90, 120, 200, 30);
+				}
+				
+			}
+		});
+        
     }
     
     private void handleUnlockVaultAction() throws Exception {
@@ -52,6 +76,10 @@ public class LaunchPageController {
     		}
     		
     	}
+    }
+    
+    private void ResetDB() {
+    	utils.ResetDB();
     }
     
 

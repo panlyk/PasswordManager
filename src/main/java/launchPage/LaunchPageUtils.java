@@ -56,5 +56,9 @@ public class LaunchPageUtils {
 			return false;
 		}
     }
+    
+    public void ResetDB () {
+    	db.wipeDB();
+    }
 
 }
