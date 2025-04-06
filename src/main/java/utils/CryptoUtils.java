@@ -84,10 +84,7 @@ public class CryptoUtils {
 	//returns a hashed string from a password string
 	public String getHashString (String pw) {
 		//check if input is valid
-		if (!isValidBase64(pw)) {
-		    throw new IllegalArgumentException("Invalid Base64 input");
-		}
-		byte[] pwBytes = Base64.getDecoder().decode(pw);
+		byte[] pwBytes = pw.getBytes(StandardCharsets.UTF_8);
 		byte[] pwBytesHash = null;
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
